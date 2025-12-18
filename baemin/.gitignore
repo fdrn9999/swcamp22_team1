@@ -42,7 +42,19 @@ replay_pid*
 build/
 
 # IntelliJ IDEA
-.idea/
+.idea/modules.xml
+.idea/runConfigurations/
+.idea/artifacts/
+.idea/compiler.xml
+.idea/misc.xml
+.idea/vcs.xml
+
+# Ignore personal settings
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/shelf/
+.idea/dictionaries/
+
 *.iws
 *.iml
 *.ipr
