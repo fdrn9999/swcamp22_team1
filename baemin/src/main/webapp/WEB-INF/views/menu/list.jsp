@@ -4,55 +4,59 @@
 
         <head>
             <title>배달의 민족 - 메뉴 관리</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+            <link rel="stylesheet"
+                href="${pageContext.request.contextPath}/resources/css/style.css?v=<%=System.currentTimeMillis()%>">
 
         </head>
 
         <body>
 
             <div class="container">
-                <header>
-                    <%-- 홈 화면으로 돌아가는 버튼 --%>
-                        <a href="${pageContext.request.contextPath}/" class="header-btn">‹ 홈</a>
-                        <h1>메뉴 관리</h1>
-                        <div style="width: 30px;"></div> <!-- 정렬을 위한 공간 보정용 -->
-                </header>
+                <div class="sticky-wrapper">
+                    <header>
+                        <%-- 홈 화면으로 돌아가는 버튼 --%>
+                            <a href="${pageContext.request.contextPath}/" class="header-btn">‹ 홈</a>
+                            <h1>메뉴 관리</h1>
+                            <div style="width: 30px;"></div> <!-- 정렬을 위한 공간 보정용 -->
+                    </header>
 
-                <!-- 필터 및 검색 컨트롤 영역 -->
-                <div class="filter-search-controls">
-                    <!-- 현재 표시된 메뉴 개수 (실시간 업데이트) -->
-                    <div class="menu-count-display">
-                        총 <span id="menuCount">${menuList.size()}</span>개 메뉴
-                    </div>
-                    <div class="search-filter-row">
-                        <%-- 카테고리 필터 드롭다운: 변경 시 performSearch() 호출하여 서버에서 목록 조회 --%>
-                            <select id="categoryFilter" class="category-filter" onchange="performSearch()">
-                                <option value="">전체</option>
-                                <c:forEach var="category" items="${categoryList}">
-                                    <option value="${category.categoryCode}">${category.categoryName}</option>
-                                </c:forEach>
-                            </select>
-                            <%-- 이름 검색창: 엔터키 입력 시 검색 실행 --%>
-                                <div class="search-box">
-                                    <input type="text" id="searchInput" class="search-input" placeholder="메뉴 이름 검색..."
-                                        onkeypress="if(event.key==='Enter') performSearch()">
-                                    <button class="search-btn" onclick="performSearch()" title="검색">검색</button>
-                                </div>
-                    </div>
-                    <!-- 품절 제외 필터: 체크 시 판매 중인 메뉴만 조회 -->
-                    <div class="exclude-soldout-container">
-                        <label class="exclude-soldout-wrapper">
-                            <input type="checkbox" id="excludeSoldOut" onchange="performSearch()">
-                            <span class="custom-checkbox"></span>
-                            품절 제외
-                        </label>
-                    </div>
-                    <%-- 다중 정렬 버튼: 이름순, 가격순을 조합하여 정렬 가능 --%>
-                        <div class="sort-controls">
-                            <button class="sort-btn" id="sortName" onclick="toggleSort('name')">이름순</button>
-                            <button class="sort-btn" id="sortPrice" onclick="toggleSort('price')">가격순</button>
+                    <!-- 필터 및 검색 컨트롤 영역 -->
+                    <div class="filter-search-controls">
+                        <!-- 현재 표시된 메뉴 개수 (실시간 업데이트) -->
+                        <div class="menu-count-display">
+                            총 <span id="menuCount">${menuList.size()}</span>개 메뉴
                         </div>
+                        <div class="search-filter-row">
+                            <%-- 카테고리 필터 드롭다운: 변경 시 performSearch() 호출하여 서버에서 목록 조회 --%>
+                                <select id="categoryFilter" class="category-filter" onchange="performSearch()">
+                                    <option value="">전체</option>
+                                    <c:forEach var="category" items="${categoryList}">
+                                        <option value="${category.categoryCode}">${category.categoryName}</option>
+                                    </c:forEach>
+                                </select>
+                                <%-- 이름 검색창: 엔터키 입력 시 검색 실행 --%>
+                                    <div class="search-box">
+                                        <input type="text" id="searchInput" class="search-input"
+                                            placeholder="메뉴 이름 검색..."
+                                            onkeypress="if(event.key==='Enter') performSearch()">
+                                        <button class="search-btn" onclick="performSearch()" title="검색">검색</button>
+                                    </div>
+                        </div>
+                        <!-- 품절 제외 필터: 체크 시 판매 중인 메뉴만 조회 -->
+                        <div class="exclude-soldout-container">
+                            <label class="exclude-soldout-wrapper">
+                                <input type="checkbox" id="excludeSoldOut" onchange="performSearch()">
+                                <span class="custom-checkbox"></span>
+                                품절 제외
+                            </label>
+                        </div>
+                        <%-- 다중 정렬 버튼: 이름순, 가격순을 조합하여 정렬 가능 --%>
+                            <div class="sort-controls">
+                                <button class="sort-btn" id="sortName" onclick="toggleSort('name')">이름순</button>
+                                <button class="sort-btn" id="sortPrice" onclick="toggleSort('price')">가격순</button>
+                            </div>
+                    </div>
                 </div>
 
                 <%-- 메뉴 카드들이 들어갈 컨테이너 (AJAX 요청 시 이 영역의 HTML만 교체됨) --%>
@@ -440,7 +444,19 @@
                     nameSortState = urlParams.get('nameSort') || '';
                     priceSortState = urlParams.get('priceSort') || '';
                     updateSortButtons();
+                    adjustContentSpacing(); // Initial adjustment
                 };
+
+                window.onresize = adjustContentSpacing; // Re-adjust on resize
+
+                function adjustContentSpacing() {
+                    const header = document.querySelector('.sticky-wrapper');
+                    const container = document.querySelector('.menu-list');
+                    if (header && container) {
+                        const headerHeight = header.offsetHeight;
+                        container.style.marginTop = Math.round(headerHeight + 20) + 'px'; // +20px for extra breathing room
+                    }
+                }
 
                 // --- Screen Click Close Logic (Improved) ---
                 let isMouseDownOnOverlay = false;
@@ -465,6 +481,11 @@
 
                     isMouseDownOnOverlay = false; // Reset
                 }
+
+                // --- iOS Zoom Prevention ---
+                document.addEventListener('gesturestart', function (e) {
+                    e.preventDefault();
+                });
 
             </script>
         </body>

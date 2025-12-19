@@ -3,7 +3,7 @@
 
     <head>
         <title>배달의 민족 - 사장님 광장</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
         <style>
             .landing-container {
@@ -64,6 +64,12 @@
             </footer>
         </div>
 
+        <script>
+            // --- iOS Zoom Prevention ---
+            document.addEventListener('gesturestart', function (e) {
+                e.preventDefault();
+            });
+        </script>
     </body>
 
     </html>
